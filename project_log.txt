@@ -1,0 +1,23 @@
+/// This is the manual log file maintianed during the making of this project.
+
+Day 1 -> exploring the idea, is it needed? how much it will affect the industry if implemented?
+Day 2 -> searching for companies / areas which may be using this kind of DB already.
+Day 3 -> listing the entities required for the database, preparing the rough schema.
+Day 5 -> NOP
+Day 6 -> NOP
+Day 7 -> NOP
+Day 8 -> NOP
+Day 9 -> NOP
+Day 10 -> Making of  ER diagram.
+Day 11 -> FIXES in ER diagram.(as per suggestion from faculty)
+DAY 13 -> NOP
+DAY 14 -> NOP
+DAY 15 -> NOP
+DAY 16 -> NOP
+DAY 17 -> NOP
+DAY 18 -> Converting the ER diagram to tables/schema(on paper)
+Day 19 -> Implementation of the tables/schema in postgresql.
+Day 20 -> fixes in schema.
+Day 21 -> fixes in schema.
+Day 22 -> Data entry in tables.
+
