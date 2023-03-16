@@ -57,6 +57,7 @@ CREATE TABLE FRUITS(
   SEID INTEGER references SEASON(SEID)
 );
 
+
 CREATE TABLE FLOWERS(
   PID INTEGER references PRODUCT(PID) PRIMARY KEY,
   NAME VARCHAR(25) NOT NULL,
@@ -101,6 +102,7 @@ CREATE TABLE GARDEN_OWNERS(
   CHARGEPERMONTH INTEGER NOT NULL CHECK(CHARGEPERMONTH > 0),
   TOTAL numeric(30,2) GENERATED ALWAYS AS (DURATION * CHARGEPERMONTH) STORED
 );
+-- TOTAL DECIMAL(30,2) AS (DURATION * CHARGEPERMONTH) STORED);
 
 CREATE TABLE OWNS(
   GID INTEGER references GARDEN_OWNERS(GID) NOT NULL,
@@ -368,3 +370,68 @@ INSERT INTO USED_FOR(TID,PID) VALUES
 (204,'2023-02-10', 89000,50, 415, 107),
 (205,'2023-02-12', 36000,23, 420, 106),
 (206,'2023-01-10', 96000,100,415,109);
+
+
+
+
+-- cursor project 
+
+create or replace procedure calc_tax()
+language plpgsql
+as $$
+declare
+rec1 record;
+tax integer;
+cur1 cursor for select * from employee ;
+begin 
+    open cur1;
+     loop
+        fetch cur1 into rec1;
+        exit when not found;
+        tax := rec1.salary*0.3;
+        raise notice 'NAME = %',rec1.name;
+        raise NOTICE 'Tax = %',tax;
+     end loop;
+    close cur1;
+end;
+$$;
+
+
+-- trigger project
+
+CREATE OR REPLACE FUNCTION update_employee_salary() 
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE employee
+  SET salary = salary + (salary * 0.1)
+  WHERE eid = NEW.eid;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER increase_employee_salary
+AFTER INSERT ON employee
+FOR EACH ROW
+EXECUTE FUNCTION update_employee_salary();
+
+
+
+
+
+CREATE OR REPLACE FUNCTION prevent_deletion() RETURNS trigger AS $$
+DECLARE
+  orders_count INTEGER;
+BEGIN
+  SELECT COUNT(*) INTO orders_count
+  FROM orders
+  WHERE pid = OLD.pid;
+  IF orders_count > 0 THEN
+    RAISE EXCEPTION 'Cannot delete product with associated orders.';
+  END IF;
+  RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER prevent_deletion
+BEFORE DELETE ON product
+FOR EACH ROW
+EXECUTE FUNCTION prevent_deletion();
